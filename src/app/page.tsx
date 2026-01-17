@@ -38,24 +38,52 @@ const ContactModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
           {step === 'form' ? (
             <form
               className="mt-6 space-y-4"
-              onSubmit={(e) => {
+              onSubmit={async (e) => {
                 e.preventDefault();
-                setStep('success');
+                const form = e.currentTarget as HTMLFormElement;
+                const submitBtn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+                if (submitBtn) submitBtn.disabled = true;
+
+                try {
+                  const formData = new FormData(form);
+                  const response = await fetch("https://formspree.io/f/xnjjjknr", {
+                    method: "POST",
+                    body: formData,
+                    headers: {
+                      'Accept': 'application/json'
+                    }
+                  });
+
+                  if (response.ok) {
+                    setStep('success');
+                  } else {
+                    alert('There was a problem submitting your form');
+                  }
+                } catch (error) {
+                  alert('There was a problem submitting your form');
+                } finally {
+                  if (submitBtn) submitBtn.disabled = false;
+                }
               }}
             >
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-slate-700 dark:text-slate-300">Name</label>
-                <input required type="text" id="name" className="mt-1 block w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-slate-900 placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 dark:border-slate-700 dark:bg-slate-800 dark:text-white" placeholder="Jane Doe" />
+                <input required type="text" id="name" name="name" className="mt-1 block w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-slate-900 placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 dark:border-slate-700 dark:bg-slate-800 dark:text-white" placeholder="Jane Doe" />
+              </div>
+
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-slate-700 dark:text-slate-300">Work Email</label>
+                <input required type="email" id="email" name="email" className="mt-1 block w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-slate-900 placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 dark:border-slate-700 dark:bg-slate-800 dark:text-white" placeholder="jane@company.com" />
               </div>
 
               <div>
                 <label htmlFor="company" className="block text-sm font-medium text-slate-700 dark:text-slate-300">Company</label>
-                <input required type="text" id="company" className="mt-1 block w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-slate-900 placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 dark:border-slate-700 dark:bg-slate-800 dark:text-white" placeholder="Acme Inc." />
+                <input required type="text" id="company" name="company" className="mt-1 block w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-slate-900 placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 dark:border-slate-700 dark:bg-slate-800 dark:text-white" placeholder="Acme Inc." />
               </div>
 
               <div>
                 <label htmlFor="role" className="block text-sm font-medium text-slate-700 dark:text-slate-300">Role</label>
-                <input required type="text" id="role" className="mt-1 block w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-slate-900 placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 dark:border-slate-700 dark:bg-slate-800 dark:text-white" placeholder="Director of Planning" />
+                <input required type="text" id="role" name="role" className="mt-1 block w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-slate-900 placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 dark:border-slate-700 dark:bg-slate-800 dark:text-white" placeholder="Director of Planning" />
               </div>
 
               <div className="pt-2">
