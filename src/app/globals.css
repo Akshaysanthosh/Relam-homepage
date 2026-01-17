@@ -1,0 +1,13 @@
+/* src/app/globals.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Your CSS variables (used in page.tsx inline styles) */
+:root {
+  --bg-cream: #F4F0EB;
+  --text-dark: #1c203c;
+}
+
+/* Nice-to-have defaults */
+html, body { height: 100%; }
